@@ -1,0 +1,128 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#3c2673">
+  <meta name="description" content="Co-VLA uses consensus optimization to train vision-language-action models across robot clients while keeping their data local.">
+  <meta name="author" content="Haolong Li, Guner Dilsad Er, Michael Muehlebach, Joerg Stueckler">
+  <meta name="citation_author" content="Li, Haolong">
+  <meta name="citation_author" content="Er, Guner Dilsad">
+  <meta name="citation_author" content="Muehlebach, Michael">
+  <meta name="citation_author" content="Stueckler, Joerg">
+  <meta name="citation_title" content="Co-VLA: Consensus-based Federated Training for Vision-Language-Action Models">
+  <meta name="citation_publication_date" content="2026/09/17">
+  <meta name="citation_pdf_url" content="https://arxiv.org/pdf/2609.19923">
+  <title>Co-VLA · Consensus-based Federated VLA Training</title>
+  <link rel="icon" href="assets/favicon.svg?v=purple" type="image/svg+xml">
+  <link rel="stylesheet" href="style.css">
+  <script src="script.js" defer></script>
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to content</a>
+  <header class="site-header">
+    <div class="nav-wrap">
+      <a class="wordmark" href="#" aria-label="Co-VLA home"><span class="brand-icon" aria-hidden="true">✳</span> Co-VLA</a>
+      <nav aria-label="Main navigation">
+        <a href="#overview">Overview</a><a href="#method">Method</a><a href="#results">Results</a>
+      </nav>
+    </div>
+  </header>
+
+  <main id="main">
+    <section class="hero container" aria-labelledby="paper-title">
+      <h1 id="paper-title"><span class="project-name">Co-VLA</span>Consensus-based Federated Training<br class="desktop-break"> for Vision-Language-Action Models</h1>
+      <p class="authors">
+        <span>Haolong Li<sup>1</sup></span>
+        <span>Guner Dilsad Er<sup>2</sup></span>
+        <span>Michael Muehlebach<sup>2</sup></span>
+        <span>Joerg Stueckler<sup>1</sup></span>
+      </p>
+      <div class="affiliations">
+        <p><sup>1</sup> Intelligent Perception in Technical Systems, University of Augsburg, Germany</p>
+        <p><sup>2</sup> Max Planck Institute for Intelligent Systems, Germany</p>
+      </div>
+      <div class="hero-links">
+        <a class="button button-primary" href="https://arxiv.org/pdf/2609.19923" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M14 3H6a1 1 0 0 0-1 1v16a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V8zM14 3v6h5M8 13h8M8 17h6"/></svg>Read the paper<span aria-hidden="true">↗</span></a>
+        <a class="button button-secondary" href="#experiments"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m9 5 11 7-11 7z"/></svg>Watch the videos</a>
+      </div>
+      <figure class="teaser">
+        <img src="assets/images/method-overview.png" alt="Co-VLA connects four robot clients with different local tasks to a central server. Each client trains on its own data and exchanges model updates with the server, which computes a shared global model using ADMM consensus." width="1500" height="595" fetchpriority="high">
+      </figure>
+    </section>
+
+    <section id="overview" class="section abstract-section">
+      <div class="container prose-layout">
+        <div><span class="eyebrow">01 / Overview</span><h2>Collaboration without<br>centralizing robot data.</h2></div>
+        <div class="prose">
+          <p>Vision-language-action models map camera observations and language instructions to robot actions. Their performance improves with more data, but robot demonstrations are spread across tasks, labs, and platforms. Combining all of that data in one place can be costly or impractical.</p>
+          <p><strong>Co-VLA applies consensus ADMM to federated training of vision-language-action models.</strong> Each client learns from its own demonstrations. A shared global model, a penalty on local disagreement, and accumulated correction terms help align the clients despite their different data distributions.</p>
+          <p>The same algorithm supports full-model training, fixed-rank <strong>LoRA</strong> adapters, and rank-adaptive <strong>SoRA</strong> adapters.</p>
+          <details><summary>Read the full abstract <span aria-hidden="true">+</span></summary><p>Vision-language-action models (VLAs) have emerged as a promising paradigm for general-purpose robot learning, with performance improving as models and datasets scale. Scaling robot data collection, however, remains challenging because data are naturally distributed across robots, tasks, and locations, making centralization costly or impractical. Federated learning offers a way to train on decentralized robot data, but applying it to VLAs requires accounting for heterogeneous robot client data distributions. We present Co-VLA, which applies consensus optimization using the Alternating Direction Method of Multipliers (ADMM) to federated VLA training. We show that the same algorithm supports both full-model training and parameter-efficient fine-tuning with both fixed-rank and rank-adaptive adapters. The name Co-VLA reflects both consensus and collaboration: clients with different local robot datasets collaboratively train a shared model without sharing their data. Our experiments demonstrate that Co-VLA achieves performance comparable to centralized training in both full-model training and parameter-efficient fine-tuning settings.</p></details>
+        </div>
+      </div>
+    </section>
+
+    <section id="method" class="section container">
+      <div class="section-heading"><div><span class="eyebrow">02 / Method</span><h2>Consensus-based Federated Training</h2></div><p>One optimization principle, from full-model training to parameter efficient fine-tuning.</p></div>
+      <div class="method-steps">
+        <article><span class="step-number">01</span><h3>Learn on each client</h3><p>Train on local observations, instructions, and target actions. A quadratic penalty couples the local parameters to the global model.</p><div class="step-tag">Robot data stays local</div></article>
+        <article><span class="step-number">02</span><h3>Track disagreement</h3><p>Each client maintains a dual variable: a correction that accumulates the difference between its updates and the shared model.</p><div class="step-tag">Correct client drift</div></article>
+        <article><span class="step-number">03</span><h3>Build a shared model</h3><p>The server averages the corrected updates, then sends the new global parameters back to every client.</p><div class="step-tag">Repeat to reach consensus</div></article>
+      </div>
+      <div class="consensus-block">
+        <div><span class="eyebrow">The consensus objective</span><div class="equation" aria-label="Minimize the sum of local losses f i of x i, subject to each local model x i equaling the global model z."><span>min</span> ∑<sub>i</sub> f<sub>i</sub>(x<sub>i</sub>) <span class="equation-subject">subject to</span> x<sub>i</sub> = z</div><p>Local parameters <i>x<sub>i</sub></i>, local action loss <i>f<sub>i</sub></i>, and shared global parameters <i>z</i>.</p></div>
+        <p>Co-VLA solves this objective using the <strong>Alternating Direction Method of Multipliers (ADMM)</strong>, with a fixed number of local gradient steps per round.</p>
+      </div>
+      <div class="adapter-grid">
+        <article><h3>Full-model training</h3><p>Apply consensus to the trainable policy parameters. The local model uses its usual action-supervision loss.</p></article>
+        <article><h3>LoRA fine-tuning</h3><p>Align the low-rank factors themselves. This reduces the mismatch between averaging factor products and multiplying averaged factors.</p></article>
+        <article><h3>SoRA fine-tuning</h3><p>Add shared gates to the rank components. Server-side soft thresholding drives unused gates to zero, enabling adapter pruning.</p></article>
+      </div>
+    </section>
+
+    <section id="results" class="section experiments-section">
+      <div class="container">
+        <div class="section-heading results-heading"><div><span class="eyebrow">03 / Results</span><h2>Closed-loop evaluation</h2></div><p>We evaluate SmolVLA on four tasks using an SO-101 robot arm, with 50 training demonstrations per task. The federated setup uses four clients, each trained only on demonstrations from one task.</p></div>
+        <div id="experiments" class="comparison-header"><h3>Qualitative results</h3><span>4 methods · 2 camera views · 10× speed</span></div>
+        <div class="video-toolbar">
+          <div class="tab-list task-tabs" role="tablist" aria-label="Robot task">
+            <button id="tab-stack" role="tab" aria-selected="true" aria-controls="task-panel" data-task="stack">Stack</button>
+            <button id="tab-pick" role="tab" aria-selected="false" aria-controls="task-panel" tabindex="-1" data-task="pick">Pick &amp; place</button>
+            <button id="tab-sort" role="tab" aria-selected="false" aria-controls="task-panel" tabindex="-1" data-task="sort">Sort</button>
+            <button id="tab-fold" role="tab" aria-selected="false" aria-controls="task-panel" tabindex="-1" data-task="fold">Fold</button>
+          </div>
+          <label class="round-select">Evaluation <select id="video-round"><option value="1">Round 1</option><option value="2">Round 2</option></select></label>
+        </div>
+        <div id="task-panel" role="tabpanel" aria-labelledby="tab-stack" tabindex="0">
+          <video id="task-video" controls playsinline preload="none" poster="assets/images/stack-round1.jpg?v=4896f4333cbe" aria-label="Stacking comparison, round 1"><source src="assets/videos/stack-round1.mp4?v=4896f4333cbe" type="video/mp4">Your browser does not support video.</video>
+          <div class="task-caption"><div><span class="eyebrow" id="task-kicker">Task 01 / Stack</span><h4 id="task-title">Put the red cube on top of the blue cube.</h4></div><div class="task-score"><strong id="task-rate">97.5%</strong><span>Co-VLA success · both rounds</span></div></div>
+        </div>
+        <noscript><p>Additional comparisons: <a href="assets/videos/pick-round1.mp4?v=4896f4333cbe">pick &amp; place</a>, <a href="assets/videos/sort-round1.mp4?v=4896f4333cbe">sort</a>, <a href="assets/videos/fold-round1.mp4?v=4896f4333cbe">fold</a>.</p></noscript>
+        <div id="result-panel" class="quantitative-results">
+          <div class="comparison-header"><h3 id="result-heading">Quantitative results</h3><span>Task success rates (%) · Higher is better</span></div>
+          <div class="result-summary"><p id="result-description">SmolVLA on the SO-101 robot. Four clients, one task per client; 40 evaluation trials per task.</p></div>
+        <div class="table-scroll" role="region" aria-label="Success rate comparison" tabindex="0"><table id="results-table"><caption>Real-world task success (%)</caption><thead><tr><th scope="col">Method</th><th scope="col">Stack</th><th scope="col">Pick &amp; place</th><th scope="col">Sort</th><th scope="col">Fold</th><th scope="col">Average</th></tr></thead><tbody><tr class="ours"><th scope="row">Co-VLA <span class="ours-tag">Ours</span></th><td>97.5</td><td>100.0</td><td>100.0</td><td>100.0</td><td class="average">99.4</td></tr><tr><th scope="row">FedAvg</th><td>62.5</td><td>100.0</td><td>92.5</td><td>100.0</td><td class="average">88.8</td></tr><tr><th scope="row">DiLoCo</th><td>67.5</td><td>97.5</td><td>92.5</td><td>100.0</td><td class="average">89.4</td></tr><tr class="central"><th scope="row">Centralized training</th><td>92.5</td><td>100.0</td><td>95.0</td><td>100.0</td><td class="average">96.9</td></tr></tbody></table></div>
+        <p class="result-note" id="result-note">1,000 communication rounds, 100 local steps per round.</p>
+        </div>
+      </div>
+    </section>
+
+    <section id="citation" class="section citation-section" aria-labelledby="citation-heading">
+      <div class="container">
+        <h2 id="citation-heading" class="eyebrow">04 / Citation</h2>
+        <div class="citation-code"><button id="copy-citation" type="button">Copy BibTeX <span aria-hidden="true">⧉</span></button><pre><code id="bibtex">@misc{li2026covlaconsensusbasedfederatedtraining,
+  title         = {Co-VLA: Consensus-based Federated Training for Vision-Language-Action Models},
+  author        = {Haolong Li and Guner Dilsad Er and Michael Muehlebach and Joerg Stueckler},
+  year          = {2026},
+  eprint        = {2609.19923},
+  archivePrefix = {arXiv},
+  primaryClass  = {cs.RO},
+  url           = {https://arxiv.org/abs/2609.19923},
+}</code></pre><span id="copy-status" class="sr-only" role="status"></span></div>
+      </div>
+    </section>
+  </main>
+  <footer class="container"><a class="wordmark" href="#">✳ Co-VLA</a><p>Page layout inspired by <a href="https://embodiedvision.github.io/mro-gwm/" target="_blank" rel="noopener">MRO-GWM ↗</a>.<br>Figures, results, and videos from the Co-VLA manuscript.</p></footer>
+</body>
+</html>
