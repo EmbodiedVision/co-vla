@@ -3,6 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex, nofollow">
   <meta name="theme-color" content="#3c2673">
   <meta name="description" content="Co-VLA uses consensus optimization to train vision-language-action models across robot clients while keeping their data local.">
   <meta name="author" content="Haolong Li, Guner Dilsad Er, Michael Muehlebach, Joerg Stueckler">
@@ -15,7 +16,7 @@
   <meta name="citation_pdf_url" content="https://arxiv.org/pdf/2609.19923">
   <title>Co-VLA · Consensus-based Federated VLA Training</title>
   <link rel="icon" href="assets/favicon.svg?v=purple" type="image/svg+xml">
-  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="style.css?v=20edfb97e77e">
   <script src="script.js" defer></script>
 </head>
 <body>
@@ -81,11 +82,99 @@
       </div>
     </section>
 
-    <section id="results" class="section experiments-section">
+    <section id="results" class="section experiments-section" aria-labelledby="results-heading">
       <div class="container">
-        <div class="section-heading results-heading"><div><span class="eyebrow">03 / Results</span><h2>Closed-loop evaluation</h2></div><p>We evaluate SmolVLA on four tasks using an SO-101 robot arm, with 50 training demonstrations per task. The federated setup uses four clients, each trained only on demonstrations from one task.</p></div>
-        <div id="experiments" class="comparison-header"><h3>Qualitative results</h3><span>4 methods · 2 camera views · 10× speed</span></div>
-        <div class="video-toolbar">
+        <h2 id="results-heading" class="eyebrow results-title">03 / Results</h2>
+
+        <section id="simulated-data" class="results-group" aria-labelledby="simulated-data-heading">
+          <header class="results-group-heading">
+            <h3 id="simulated-data-heading">Evaluation with Simulated Data</h3>
+            <p id="simulation-intro">We report success rates (0–1) on LIBERO over 500 evaluation trials per task suite. Federated training uses ten clients per suite, with one task per client.</p>
+          </header>
+          <section id="smolvla-scratch" class="evaluation" aria-labelledby="smolvla-scratch-heading">
+            <div class="evaluation-heading"><h4 id="smolvla-scratch-heading">Results of training from scratch for SmolVLA</h4></div>
+            <div class="result-table-block">
+              <div class="table-heading"><span>Success rate · Higher is better</span></div>
+              <div class="table-scroll" role="region" aria-label="SmolVLA training from scratch: LIBERO success rates" tabindex="0">
+                <table id="smolvla-scratch-table" class="simulation-table" aria-describedby="simulation-intro scratch-budget">
+                  <caption>SmolVLA training from scratch: LIBERO success rates</caption>
+                  <thead><tr><th scope="col">Method</th><th scope="col">Spatial</th><th scope="col">Object</th><th scope="col">Goal</th><th scope="col">Long</th></tr></thead>
+                  <tbody><tr class="ours"><th scope="row">Co-VLA</th><td><strong>0.80</strong></td><td>0.91</td><td><strong>0.92</strong></td><td>0.71</td></tr><tr><th scope="row">FedAvg</th><td>0.76</td><td>0.89</td><td>0.91</td><td>0.63</td></tr><tr><th scope="row">DiLoCo</th><td>0.77</td><td><strong>0.93</strong></td><td>0.90</td><td><strong>0.76</strong></td></tr><tr class="central"><th scope="row">Centralized training</th><td>0.81</td><td>0.95</td><td>0.94</td><td>0.70</td></tr></tbody>
+                </table>
+              </div>
+              <p id="scratch-budget" class="result-note">Federated training: 1,500 communication rounds, 100 local steps per round.</p>
+            </div>
+          </section>
+          <section id="lora-finetuning" class="evaluation" aria-labelledby="lora-heading">
+            <div class="evaluation-heading"><h4 id="lora-heading">Results of LoRA fine-tuning for SmolVLA and X-VLA</h4></div>
+            <div class="result-table-block">
+              <div class="table-heading"><p class="table-title">SmolVLA </p><span>Success rate · Higher is better</span></div>
+              <div class="table-scroll" role="region" aria-label="SmolVLA LoRA fine-tuning: LIBERO success rates" tabindex="0">
+                <table id="smolvla-lora-table" class="simulation-table" aria-describedby="simulation-intro smolvla-lora-budget smolvla-sora-note">
+                  <caption>SmolVLA LoRA fine-tuning: LIBERO success rates</caption>
+                  <thead><tr><th scope="col">Method</th><th scope="col">Spatial</th><th scope="col">Object</th><th scope="col">Goal</th><th scope="col">Long</th></tr></thead>
+                  <tbody><tr class="ours"><th scope="row">Co-VLA LoRA</th><td><strong>0.75</strong></td><td><strong>0.81</strong></td><td>0.87</td><td>0.51</td></tr><tr class="ours"><th scope="row">Co-VLA SoRA</th><td>0.69 <span class="retained-parameters">(60%)</span></td><td>0.79 <span class="retained-parameters">(59%)</span></td><td><strong>0.88</strong> <span class="retained-parameters">(55%)</span></td><td>0.53 <span class="retained-parameters">(58%)</span></td></tr><tr><th scope="row">FedAvg LoRA</th><td>0.61</td><td>0.67</td><td>0.79</td><td>0.52</td></tr><tr><th scope="row">DiLoCo LoRA</th><td>0.47</td><td>0.61</td><td>0.77</td><td>0.51</td></tr><tr><th scope="row">FLoRA</th><td>0.66</td><td>0.79</td><td>0.81</td><td>0.50</td></tr><tr><th scope="row">FLoRA (7,500 rounds)</th><td>0.71</td><td>0.80</td><td>0.84</td><td><strong>0.58</strong></td></tr><tr><th scope="row">FlexLoRA</th><td>0.66</td><td>0.77</td><td>0.81</td><td>0.54</td></tr><tr class="central"><th scope="row">Centralized training</th><td>0.76</td><td>0.80</td><td>0.84</td><td>0.57</td></tr></tbody>
+                </table>
+              </div>
+              <p id="smolvla-lora-budget" class="result-note">Federated training: 2,500 communication rounds unless marked, 100 local steps per round.</p>
+              <p id="smolvla-sora-note" class="result-note">Percentages in parentheses indicate the fraction of adapter parameters retained after SoRA pruning.</p>
+            </div>
+            <div class="result-table-block">
+              <div class="table-heading"><p class="table-title">X-VLA</p><span>Success rate · Higher is better</span></div>
+              <div class="table-scroll" role="region" aria-label="X-VLA LoRA fine-tuning: LIBERO success rates" tabindex="0">
+                <table id="xvla-lora-table" class="simulation-table" aria-describedby="simulation-intro xvla-lora-budget sora-note">
+                  <caption>X-VLA LoRA fine-tuning: LIBERO success rates</caption>
+                  <thead><tr><th scope="col">Method</th><th scope="col">Spatial</th><th scope="col">Object</th><th scope="col">Goal</th><th scope="col">Long</th></tr></thead>
+                  <tbody><tr class="ours"><th scope="row">Co-VLA LoRA</th><td><strong>0.88</strong></td><td><strong>0.97</strong></td><td><strong>0.93</strong></td><td><strong>0.78</strong></td></tr><tr class="ours"><th scope="row">Co-VLA SoRA</th><td>0.83 <span class="retained-parameters">(86%)</span></td><td>0.91 <span class="retained-parameters">(83%)</span></td><td>0.85 <span class="retained-parameters">(86%)</span></td><td>0.70 <span class="retained-parameters">(89%)</span></td></tr><tr><th scope="row">FlexLoRA</th><td>0.64</td><td>0.62</td><td>0.55</td><td>0.54</td></tr><tr><th scope="row">FlexLoRA (2,500 rounds)</th><td>0.74</td><td>0.70</td><td>0.64</td><td>0.54</td></tr><tr class="central"><th scope="row">Centralized training</th><td>0.87</td><td>0.98</td><td>0.93</td><td>0.74</td></tr></tbody>
+                </table>
+              </div>
+              <p id="xvla-lora-budget" class="result-note">Federated training: 900 communication rounds unless marked, 100 local steps per round.</p>
+            </div>
+            <p id="sora-note" class="result-note">Percentages in parentheses indicate the fraction of adapter parameters retained after SoRA pruning.</p>
+          </section>
+        </section>
+
+        <section id="real-world-data" class="results-group" aria-labelledby="real-world-data-heading">
+          <header class="results-group-heading"><h3 id="real-world-data-heading">Evaluation with Real-World Data for SmolVLA</h3></header>
+        <section id="open-loop" class="evaluation" aria-labelledby="open-loop-heading">
+          <div class="evaluation-heading"><h4 id="open-loop-heading">Open-loop evaluation</h4></div>
+          <p class="evaluation-intro">We measure SmolVLA’s ℓ<sub>1</sub> action prediction error against recorded actions on four real-world datasets, using 100 held-out test episodes per dataset. Federated training uses four clients, with one dataset per client.</p>
+          <div class="result-table-block">
+            <div class="table-heading"><p id="dataset-heading" class="table-title">Cross-embodiment datasets</p></div>
+            <div class="table-scroll" role="region" aria-labelledby="dataset-heading" tabindex="0">
+              <table id="dataset-table">
+                <caption>Robot embodiments and training data composition</caption>
+                <thead><tr><th scope="col">Dataset</th><th scope="col">Robot type</th><th scope="col">Action dimensions</th><th scope="col">Training share</th></tr></thead>
+                <tbody>
+                  <tr><th scope="row">Berkeley Bridge</th><td>WidowX</td><td>7</td><td>23.46%</td></tr>
+                  <tr><th scope="row">FMB</th><td>Franka</td><td>7</td><td>13.94%</td></tr>
+                  <tr><th scope="row">Jaco Play</th><td>Jaco 2</td><td>4</td><td>15.66%</td></tr>
+                  <tr><th scope="row">Fractal</th><td>Google Robot</td><td>7</td><td>46.94%</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+          <div class="result-table-block">
+            <div class="table-heading"><p id="open-loop-results-heading" class="table-title">Action prediction error</p><span id="open-loop-metric">Relative change from centralized training (%) · Lower is better</span></div>
+            <div class="table-scroll" role="region" aria-labelledby="open-loop-results-heading" tabindex="0">
+              <table id="open-loop-table" aria-describedby="open-loop-metric open-loop-note">
+                <caption>Relative change in ℓ₁ action prediction error compared with centralized training (%)</caption>
+                <thead><tr><th scope="col">Method</th><th scope="col" class="average">Average</th><th scope="col">Berkeley Bridge</th><th scope="col">FMB</th><th scope="col">Jaco Play</th><th scope="col">Fractal</th></tr></thead>
+                <tbody>
+                  <tr class="ours"><th scope="row">Co-VLA</th><td class="average"><strong>+1.3</strong></td><td>−1.2</td><td><strong>−1.2</strong></td><td>+1.9</td><td>+5.5</td></tr>
+                  <tr><th scope="row">FedAvg</th><td class="average">+4.3</td><td>+0.0</td><td>+4.9</td><td>+7.2</td><td>+4.9</td></tr>
+                  <tr><th scope="row">DiLoCo</th><td class="average">+2.0</td><td><strong>−2.8</strong></td><td>+4.7</td><td><strong>+1.7</strong></td><td><strong>+4.2</strong></td></tr>
+                </tbody>
+              </table>
+            </div>
+            <p class="result-note" id="open-loop-note">Negative values indicate lower error than centralized training.</p>
+          </div>
+        </section>
+
+        <section id="closed-loop" class="evaluation" aria-labelledby="closed-loop-heading">
+        <div class="evaluation-heading"><h4 id="closed-loop-heading">Closed-loop evaluation</h4><span>4 methods · 2 camera views · 10× speed</span></div>
+          <p class="evaluation-intro">We evaluate SmolVLA on four tasks using an SO-101 robot arm, with 50 training demonstrations per task. Federated training uses four clients, with one task per client.</p>
+        <div id="experiments" class="video-toolbar">
           <div class="tab-list task-tabs" role="tablist" aria-label="Robot task">
             <button id="tab-stack" role="tab" aria-selected="true" aria-controls="task-panel" data-task="stack">Stack</button>
             <button id="tab-pick" role="tab" aria-selected="false" aria-controls="task-panel" tabindex="-1" data-task="pick">Pick &amp; place</button>
@@ -96,15 +185,16 @@
         </div>
         <div id="task-panel" role="tabpanel" aria-labelledby="tab-stack" tabindex="0">
           <video id="task-video" controls playsinline preload="none" poster="assets/images/stack-round1.jpg?v=4896f4333cbe" aria-label="Stacking comparison, round 1"><source src="assets/videos/stack-round1.mp4?v=4896f4333cbe" type="video/mp4">Your browser does not support video.</video>
-          <div class="task-caption"><div><span class="eyebrow" id="task-kicker">Task 01 / Stack</span><h4 id="task-title">Put the red cube on top of the blue cube.</h4></div><div class="task-score"><strong id="task-rate">97.5%</strong><span>Co-VLA success · both rounds</span></div></div>
+          <div class="task-caption"><div><span class="eyebrow" id="task-kicker">Task 01 / Stack</span><p id="task-title" class="task-instruction">Put the red cube on top of the blue cube.</p></div><div class="task-score"><strong id="task-rate">97.5%</strong><span>Co-VLA success · both rounds</span></div></div>
         </div>
         <noscript><p>Additional comparisons: <a href="assets/videos/pick-round1.mp4?v=4896f4333cbe">pick &amp; place</a>, <a href="assets/videos/sort-round1.mp4?v=4896f4333cbe">sort</a>, <a href="assets/videos/fold-round1.mp4?v=4896f4333cbe">fold</a>.</p></noscript>
-        <div id="result-panel" class="quantitative-results">
-          <div class="comparison-header"><h3 id="result-heading">Quantitative results</h3><span>Task success rates (%) · Higher is better</span></div>
-          <div class="result-summary"><p id="result-description">SmolVLA on the SO-101 robot. Four clients, one task per client; 40 evaluation trials per task.</p></div>
-        <div class="table-scroll" role="region" aria-label="Success rate comparison" tabindex="0"><table id="results-table"><caption>Real-world task success (%)</caption><thead><tr><th scope="col">Method</th><th scope="col">Stack</th><th scope="col">Pick &amp; place</th><th scope="col">Sort</th><th scope="col">Fold</th><th scope="col">Average</th></tr></thead><tbody><tr class="ours"><th scope="row">Co-VLA <span class="ours-tag">Ours</span></th><td>97.5</td><td>100.0</td><td>100.0</td><td>100.0</td><td class="average">99.4</td></tr><tr><th scope="row">FedAvg</th><td>62.5</td><td>100.0</td><td>92.5</td><td>100.0</td><td class="average">88.8</td></tr><tr><th scope="row">DiLoCo</th><td>67.5</td><td>97.5</td><td>92.5</td><td>100.0</td><td class="average">89.4</td></tr><tr class="central"><th scope="row">Centralized training</th><td>92.5</td><td>100.0</td><td>95.0</td><td>100.0</td><td class="average">96.9</td></tr></tbody></table></div>
-        <p class="result-note" id="result-note">1,000 communication rounds, 100 local steps per round.</p>
+        <div id="result-panel" class="result-table-block">
+          <div class="table-heading"><p id="result-heading" class="table-title">Task success rates (0–1) · 40 evaluation trials per task</p><span>Success rate · Higher is better</span></div>
+        <div class="table-scroll" role="region" aria-label="Success rate comparison" tabindex="0"><table id="results-table"><caption>Real-world task success (0–1)</caption><thead><tr><th scope="col">Method</th><th class="average" scope="col">Average</th><th scope="col">Stack</th><th scope="col">Pick &amp; place</th><th scope="col">Sort</th><th scope="col">Fold</th></tr></thead><tbody><tr class="ours"><th scope="row">Co-VLA <span class="ours-tag">Ours</span></th><td class="average">0.994</td><td>0.975</td><td>1.0</td><td>1.0</td><td>1.0</td></tr><tr><th scope="row">FedAvg</th><td class="average">0.888</td><td>0.625</td><td>1.0</td><td>0.925</td><td>1.0</td></tr><tr><th scope="row">DiLoCo</th><td class="average">0.894</td><td>0.675</td><td>0.975</td><td>0.925</td><td>1.0</td></tr><tr class="central"><th scope="row">Centralized training</th><td class="average">0.969</td><td>0.925</td><td>1.0</td><td>0.95</td><td>1.0</td></tr></tbody></table></div>
+        <p class="result-note" id="result-note">Federated training: 1,000 communication rounds, 100 local steps per round.</p>
         </div>
+        </section>
+        </section>
       </div>
     </section>
 
