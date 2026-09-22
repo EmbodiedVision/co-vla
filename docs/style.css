@@ -19,13 +19,60 @@
 .affiliations .author-contact { margin-top: 8px; font-size: 14px; }
 .author-contact code { font-family: inherit; }
 
-.quantitative-results {
-  margin-top: 48px;
-  padding-top: 32px;
-  border-top: 1px solid var(--line);
-}
-
-.results-heading { display: block; }
-.results-heading > p { max-width: none; margin-top: 16px; }
-
 .hero-links { flex-wrap: wrap; }
+
+/* Results: section → data source → evaluation. */
+.results-title { line-height: inherit; margin-bottom: 52px; }
+.results-group + .results-group { margin-top: 80px; padding-top: 64px; border-top: 1px solid var(--line); }
+.results-group-heading { margin-bottom: 40px; }
+.results-group-heading h3 { font-size: 28px; line-height: 1.3; font-weight: 500; letter-spacing: -.7px; }
+.results-group-heading p { max-width: 900px; margin-top: 16px; font-size: 15px; line-height: 1.8; }
+.evaluation + .evaluation { margin-top: 52px; padding-top: 44px; border-top: 1px solid var(--line); }
+.evaluation-heading { display: flex; justify-content: space-between; align-items: baseline; gap: 24px; }
+.evaluation-heading h4 { font-size: 22px; line-height: 1.35; font-weight: 500; letter-spacing: -.3px; }
+.evaluation-heading > span { font-size: 14px; color: var(--muted); }
+.evaluation-intro { max-width: 920px; margin-top: 16px; margin-bottom: 28px; font-size: 15px; line-height: 1.8; }
+.result-table-block { margin-top: 24px; }
+.result-table-block + .result-table-block { margin-top: 36px; }
+.table-heading { display: flex; justify-content: space-between; align-items: baseline; gap: 24px; margin-bottom: 14px; }
+.table-heading p, .table-heading > span { font-size: 14px; color: var(--muted); }
+.table-heading > span { margin-left: auto; text-align: right; }
+.table-heading .table-title { font-size: 16px; font-weight: 500; color: var(--ink); }
+#results .table-scroll { background: var(--white); }
+#results table { min-width: 660px; font-size: 14px; text-align: center; }
+#results th, #results td { padding: 15px 20px; }
+#results thead th { font-size: 14px; text-transform: none; letter-spacing: 0; font-weight: 500; color: var(--muted); }
+#results .ours { background: var(--accent-soft); }
+#results .simulation-table { min-width: 740px; table-layout: fixed; }
+#results .simulation-table th:first-child { width: 30%; }
+#results .simulation-table tbody td { font-weight: 400; }
+#results .simulation-table .ours th { font-weight: 600; }
+.retained-parameters { color: var(--muted); font-weight: 400; }
+#dataset-table { table-layout: fixed; }
+#dataset-table th:first-child { width: 28%; }
+#dataset-table th:nth-child(2), #dataset-table td:nth-child(2) { text-align: left; }
+#results #open-loop-table { min-width: 800px; }
+#open-loop-table tbody td { font-weight: 400; }
+#open-loop-table .average { border-left: 1px solid var(--line); border-right: 1px solid var(--line); }
+#open-loop-table .ours th { font-weight: 600; }
+#results-table tbody tr:not(.ours):not(.central) .average { font-weight: 400; }
+#result-panel { margin-top: 40px; padding-top: 32px; border-top: 1px solid var(--line); }
+#task-title { font-size: 18px; line-height: 1.35; font-weight: 500; color: var(--ink); }
+@media (max-width: 1000px) {
+  .results-group-heading h3 { font-size: 26px; }
+  .evaluation-heading { display: block; }
+  .evaluation-heading > span { display: block; margin-top: 10px; }
+}
+@media (max-width: 700px) {
+  .results-title { margin-bottom: 36px; }
+  .results-group + .results-group { margin-top: 60px; padding-top: 44px; }
+  .results-group-heading { margin-bottom: 32px; }
+  .results-group-heading h3 { font-size: 25px; }
+  .results-group-heading p, .evaluation-intro { font-size: 14px; }
+  .evaluation + .evaluation { margin-top: 40px; padding-top: 36px; }
+  .evaluation-heading h4 { font-size: 20px; }
+  .table-heading { display: block; }
+  .table-heading > span { display: block; margin-top: 6px; }
+  #results th, #results td { padding: 14px 18px; }
+  #task-title { font-size: 15px; }
+}
