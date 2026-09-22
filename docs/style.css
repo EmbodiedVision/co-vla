@@ -55,7 +55,7 @@
 #open-loop-table tbody td { font-weight: 400; }
 #open-loop-table .average { border-left: 1px solid var(--line); border-right: 1px solid var(--line); }
 #open-loop-table .ours th { font-weight: 600; }
-#results-table tbody tr:not(.ours):not(.central) .average { font-weight: 400; }
+#results-table tbody tr:not(.ours) .average { font-weight: 400; }
 #result-panel { margin-top: 40px; padding-top: 32px; border-top: 1px solid var(--line); }
 #task-title { font-size: 18px; line-height: 1.35; font-weight: 500; color: var(--ink); }
 @media (max-width: 1000px) {
